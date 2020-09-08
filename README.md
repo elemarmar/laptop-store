@@ -109,10 +109,13 @@ const server = http.createServer((req, res) => {
 });
 ```
 
-we use the response object
-HTTP headeR: small message that we send with a request to let the browser know what kind of data is coming
+<details>
+  <summary><strong>Details</strong></summary>
+  <ol>
+    <li><strong>HTTP header<strong></strong>: is a small message that we send with a request to let the browser know what kind of data is coming. In this example, we are sending an html file.</strong></li>
+  </ol>
+</details>
 
-- in this example, it's ok (200) (therei s a repsonse) and send a html file
 
 
 
@@ -120,7 +123,7 @@ HTTP headeR: small message that we send with a request to let the browser know w
 
 **4. Implementing routing**
 
-Routing is being able to respond in different ways for different URLs. We use `url` package for this
+**Routing** is being able to respond in different ways for different URLs. We use `url` package for this
 
 ```js
 const server = http.createServer((req, res) => {
@@ -143,19 +146,24 @@ const server = http.createServer((req, res) => {
 });
 ```
 
-we use the request object because that's where the url is stored
-true -> that the query is parsed into an object
+<details>
+  <summary><strong>Details</strong></summary>
+  <ol>
+    <li>we use the request object because that's where the url is stored</li>
+  </ol>
+</details>
 
-since there will be different laptops, we need to retrieve the id from each laptop from the url -> url module
+Since there will be different laptops, we need to retrieve the id from each laptop from the url
 ```js
 const query = url.parse(req.url, true).query;
-
 ```
 
 if we have url:
 ```bash
 127.0.0.1:1337/laptop?id=4&name=banana&date=today
 ````
+
+The query object will be:
 
 ```js
 query: {
@@ -189,31 +197,29 @@ there are only X laptops so if user tries to use an id that doesn't exist -> err
 
 we update the if statement for `/laptop` pathname
 
+
+
+<br />
+
+**5. Using templating**
+
+
 ---
 
-we use http and manually set routing to understand becfore use express.js framework. 
 
-
----
-
-
-Using templating: there is an HTML template that will be filled with the data for each of the laptops. 
+There is an HTML template that will be filled with the data for each of the laptops. 
 - price
 - name
 - image
 - characteristics
 - description
 
-we take the template and everything that is data, we replace it with a placeholder
-example:
+We take the template and everything that is data, we replace it with a placeholder, making sure there is not another string with the same value. Example:
 ```html
 <p class="laptop__price">${%PRICE%}</p>
 ````
-We make sure there is not another string with same value
+👉🏻 we are going to load the HTML file, replace all the placeholders with real data and send that HTML to the browser each time we request a certain laptop.
 
-we are going to load the HTML file, replace all the placeholders with real data and send that HTMl to the browser each time we request a certain laptop.
-
-we go to the laptop route
 ```js
 else if (pathName === '/laptop' && id < laptopData.length) {
 	res.writeHead(200, { 'Content-type': 'text/html'} );
@@ -234,15 +240,17 @@ else if (pathName === '/laptop' && id < laptopData.length) {
 }
 ````
 
-when it finishes reading the file, it passes de `data` into the callback function
-we now replace the placeholders
-because we have two placeholders price, we need to use a regular expression, to replace both instances
+When it finishes reading the file, it passes de `data` into the callback function, replacing the placeholders.
+⚠️ because we have two placeholders price, we need to use a regular expression, to replace both instances
 
 
 ----
 
-we do the same for product overview. we loop through all laptops and create one html card for each of them 
-1. create template with placeholders (cards). `template-card.html`
+<br />
+
+We do the same for product overview. We loop through all laptops and create one html card for each of them 
+
+👉🏻 create template with placeholders (cards). `template-card.html`
 
 **overview**
 ```html
@@ -274,7 +282,7 @@ we do the same for product overview. we loop through all laptops and create one 
 
 
 
-WE are going to create  function for replacing the placeholders
+We create the function that replaces the placeholders
 ```js
 function replaceTemplate(originalHtml, laptop) {
        let output = originalHtml.replace(/{%PRODUCTNAME%}/g, laptop.productName);
@@ -290,9 +298,7 @@ function replaceTemplate(originalHtml, laptop) {
 }
 ```
 
-
-
-2. We serve the template in the products  url
+We serve the template in the products  url
 
 ```js
   if (pathName === '/products' || pathName === '/') {
@@ -319,9 +325,14 @@ function replaceTemplate(originalHtml, laptop) {
 
 ---
 
-taking care of the images:
-node.js doesn't serve any files by defult, every url is like a route -Z it treats the src attribute of imag html as a simple request -->  in the node.js server the files and folder don't exist everything is a request and if we request an image, we need to respond to that request. 
-we write a route for images in general, not individual. general route that works for all of the images
+
+
+<br />
+
+**6. Taking care of the images:**
+⚠️ Node.js doesn't serve any files by default: every url is like a route 👉🏻 it treats the `src` attribute of the html `<img>` as a simple request 👉🏻  **in the node.js server the files and folder don't exist**, **everything is a request** and if we request an image, we need to respond to that request. 
+
+We write a route for images in general by using a **regular expression**:
 
 ```js
 // IMAGEs
@@ -343,4 +354,4 @@ else if ((/\.(jpg|jpeg|png||gif)$/i/).test(pathName)) {
 
 ## Thanks
 
-This project is based on Jonas Schmedtmann laptop store project. I haven't changed the styles. 
+This project is based on [Jonas Schmedtmann](https://github.com/jonasschmedtmann) laptop store project. I haven't changed the styles.
