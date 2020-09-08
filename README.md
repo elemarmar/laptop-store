@@ -21,9 +21,10 @@ In order to run the project `node` is needed and `nodemon` recommended.
 1. Open terminal in folder and type `nodemon`
 2. Open browser address and go to `127.0.0.1:1337`
 
+<br />
 
 
-
+---
 
 <br />
 
@@ -38,13 +39,16 @@ In order to run the project `node` is needed and `nodemon` recommended.
 5. Templating
 6. Taking care of the images
 
+<br />
 
-
+---
 <br />
 
 ## Process
+<br />
 
 Required packages:
+<br />
 
 ```js
 const fs = require('fs');
@@ -52,17 +56,20 @@ const http = require('http');
 const url = require('url');
 ```
 
+<br />
 
-
+---
 <br />
 
 **1. Reading the content of `data.json` and parse it into a JS object:**
+<br />
 
 ```js
 // read and parse laptop data
 const json = fs.readFileSync(`${__dirname}/data/data.json`, 'utf-8');
 const laptopData = JSON.parse(json);
 ```
+<br />
 
 <details>
   <summary><strong>Details</strong></summary>
@@ -74,17 +81,20 @@ const laptopData = JSON.parse(json);
   </ul>
 </details>
 
+<br />
 
-
+---
 <br />
 
 **2. Creating the web server**
+<br />
 
 ```js
 server.listen(1337, '127.0.0.1', () => {
 	console.log('Listening for requests now');
 });
 ```
+<br />
 
 <details>
   <summary><strong>Details</strong></summary>
@@ -94,8 +104,9 @@ server.listen(1337, '127.0.0.1', () => {
     <li>As soon as it starts listening, a callback function gets fired, which is the way we have to know that the server has started listening</li>
   </ol>
 </details>
+<br />
 
-
+---
 
 <br />
 
@@ -107,6 +118,8 @@ const server = http.createServer((req, res) => {
 	res.end('This is the response!');	
 });
 ```
+<br />
+
 
 <details>
   <summary><strong>Details</strong></summary>
@@ -115,7 +128,9 @@ const server = http.createServer((req, res) => {
   </ol>
 </details>
 
+<br />
 
+---
 
 
 <br /> 
@@ -123,6 +138,8 @@ const server = http.createServer((req, res) => {
 **4. Implementing routing**
 
 **Routing** is being able to respond in different ways for different URLs. We use `url` package for this
+<br />
+
 
 ```js
 const server = http.createServer((req, res) => {
@@ -144,6 +161,7 @@ const server = http.createServer((req, res) => {
 	}
 });
 ```
+<br />
 
 <details>
   <summary><strong>Details</strong></summary>
@@ -152,17 +170,26 @@ const server = http.createServer((req, res) => {
   </ol>
 </details>
 
+<br />
+
 Since there will be different laptops, we need to retrieve the id from each laptop from the url
+<br />
+
 ```js
 const query = url.parse(req.url, true).query;
 ```
+<br />
 
 if we have url:
+<br />
+
 ```bash
 127.0.0.1:1337/laptop?id=4&name=banana&date=today
 ````
+<br />
 
 The query object will be:
+<br />
 
 ```js
 query: {
@@ -171,8 +198,11 @@ query: {
 	date: 'today'
 }
 ````
+<br />
 
 we use `id` so that it gives us the value of the id directly
+<br />
+
 ```js
 const server = http.createServer((req, res) => {
 // pathName...
@@ -185,25 +215,30 @@ res.end(`This is laptop page for laptop ${id}`);
 
 
 ```
+<br />
+
 
 
 there are only X laptops so if user tries to use an id that doesn't exist -> error
+<br />
+
 ```js
 //...
   } else if (pathName === '/laptop' && id < laptopData.length) {
   //...
 ```
+<br />
 
 we update the if statement for `/laptop` pathname
+<br />
 
 
-
+---
 <br />
 
 **5. Using templating**
 
-
----
+<br />
 
 
 There is an HTML template that will be filled with the data for each of the laptops. 
@@ -213,11 +248,24 @@ There is an HTML template that will be filled with the data for each of the lapt
 - characteristics
 - description
 
+<br />
+
+
 We take the template and everything that is data, we replace it with a placeholder, making sure there is not another string with the same value. Example:
+
+<br />
+
+
 ```html
 <p class="laptop__price">${%PRICE%}</p>
 ````
+<br />
+
+
 👉🏻 we are going to load the HTML file, replace all the placeholders with real data and send that HTML to the browser each time we request a certain laptop.
+
+<br />
+
 
 ```js
 else if (pathName === '/laptop' && id < laptopData.length) {
@@ -239,8 +287,13 @@ else if (pathName === '/laptop' && id < laptopData.length) {
 }
 ````
 
+<br />
+
+
 When it finishes reading the file, it passes de `data` into the callback function, replacing the placeholders.
 ⚠️ because we have two placeholders price, we need to use a regular expression, to replace both instances
+
+<br />
 
 
 ----
@@ -251,7 +304,13 @@ We do the same for product overview. We loop through all laptops and create one 
 
 👉🏻 create template with placeholders (cards). `template-card.html`
 
+<br />
+
+
 **overview**
+
+<br />
+
 ```html
   <body>
     <div class="container">
@@ -261,7 +320,13 @@ We do the same for product overview. We loop through all laptops and create one 
   </body>
 ````
 
+<br />
+
 **card**
+
+<br />
+
+
 ```html
 <figure class="card">
   <div class="card__hero">
@@ -279,9 +344,13 @@ We do the same for product overview. We loop through all laptops and create one 
 </figure>
 ````
 
+<br />
 
 
 We create the function that replaces the placeholders
+
+<br />
+
 ```js
 function replaceTemplate(originalHtml, laptop) {
        let output = originalHtml.replace(/{%PRODUCTNAME%}/g, laptop.productName);
@@ -297,7 +366,13 @@ function replaceTemplate(originalHtml, laptop) {
 }
 ```
 
+<br />
+
+
 We serve the template in the products  url
+
+<br />
+
 
 ```js
   if (pathName === '/products' || pathName === '/') {
@@ -329,6 +404,7 @@ We serve the template in the products  url
 <br />
 
 **6. Taking care of the images:**
+
 ⚠️ Node.js doesn't serve any files by default: every url is like a route 👉🏻 it treats the `src` attribute of the html `<img>` as a simple request 👉🏻  **in the node.js server the files and folder don't exist**, **everything is a request** and if we request an image, we need to respond to that request. 
 
 We write a route for images in general by using a **regular expression**:
@@ -347,6 +423,7 @@ else if ((/\.(jpg|jpeg|png||gif)$/i/).test(pathName)) {
 
 
 
+---
 
 
 <br />
