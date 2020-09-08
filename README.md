@@ -31,13 +31,12 @@ In order to run the project `node` is needed and `nodemon` recommended.
 
 ## Structure
 
-
-
-
-
-<br />
-
-## Learning
+1. Reading data from `json`
+2. Creating the web server
+3. Creating a response for the server
+4. Implementing routing
+5. Templating
+6. Taking care of the images
 
 
 
